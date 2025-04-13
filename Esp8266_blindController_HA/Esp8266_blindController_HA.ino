@@ -20,7 +20,7 @@ const char* mqtt_server = MQTT_SERVER;
 const char* mqtt_user = MQTT_USER;
 const char* mqtt_pass = MQTT_PASS;
 
-const char* room = "bed_room_rigth";
+const char* room = "bed_room_left";
 const uint8_t stepSequence[8][4] = {
   {1, 0, 0, 0},
   {1, 1, 0, 0},
