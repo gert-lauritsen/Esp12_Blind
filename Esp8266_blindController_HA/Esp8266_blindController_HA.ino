@@ -13,6 +13,7 @@
 #define IN4_PIN 2
 #define LIMIT_TOP_PIN D3
 #define LIMIT_BOTTOM_PIN D6
+#define ReverseSetup true
 
 const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASS;
@@ -20,7 +21,9 @@ const char* mqtt_server = MQTT_SERVER;
 const char* mqtt_user = MQTT_USER;
 const char* mqtt_pass = MQTT_PASS;
 
-const char* room = "bed_room_left";
+const char* room = "bed_room_rigth";
+//const char* room = "bed_room_left";
+
 const uint8_t stepSequence[8][4] = {
   {1, 0, 0, 0},
   {1, 1, 0, 0},
@@ -30,6 +33,13 @@ const uint8_t stepSequence[8][4] = {
   {0, 0, 1, 1},
   {0, 0, 0, 1},
   {1, 0, 0, 1}
+};
+
+const uint8_t fullStepSequence[4][4] = {
+  {1, 1, 0, 0},  // Step 1
+  {0, 1, 1, 0},  // Step 2
+  {0, 0, 1, 1},  // Step 3
+  {1, 0, 0, 1}   // Step 4
 };
 
 WiFiClient espClient;
@@ -50,12 +60,16 @@ bool direction = true;
 
 int stepIndex = 0;
 unsigned long lastStepTime = 0;
-unsigned long stepInterval = 700; // microseconds between steps
+unsigned long stepInterval = 1200; // microseconds between steps
 
 void setup_wifi() {
   Serial.println("Connecting to: "+String(ssid)); 
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) delay(500);
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }  
+  Serial.println("");
 }
 
 void publishDiscoveryConfig() {
@@ -80,7 +94,9 @@ void stepMotor(bool dir) {
   else small_stepper.step(1);
 }
 */
+
 void stepMotor(bool dir) {
+  if (ReverseSetup) dir=!dir;
   if (dir) stepIndex = (stepIndex + 1) % 8;
   else stepIndex = (stepIndex + 7) % 8;
   digitalWrite(IN1_PIN, stepSequence[stepIndex][0]);
@@ -89,10 +105,25 @@ void stepMotor(bool dir) {
   digitalWrite(IN4_PIN, stepSequence[stepIndex][3]);
 }
 
+/*
+void stepMotor(bool dir) {
+  if (dir) stepIndex = (stepIndex + 1) % 4;
+  else stepIndex = (stepIndex + 3) % 4;
+  digitalWrite(IN1_PIN, fullStepSequence[stepIndex][0]);
+  digitalWrite(IN2_PIN, fullStepSequence[stepIndex][1]);
+  digitalWrite(IN3_PIN, fullStepSequence[stepIndex][2]);
+  digitalWrite(IN4_PIN, fullStepSequence[stepIndex][3]);
+}*/
+
 void moveTo(long target) {
   targetPosition = target;
   direction = (targetPosition > currentPosition);
-  moving = true;
+  if (target != currentPosition) {
+    moving = true;
+    String StatusTopic= "home/blind/" + String(room) + "/target";
+    client.publish(StatusTopic.c_str(), String(target).c_str(), true);
+    Serial.println("New Target: "+String(target));
+  }  
 }
 
 void updateMotor() {
@@ -104,6 +135,7 @@ void updateMotor() {
     if (currentPosition == targetPosition) {
       moving = false;
       publishState();
+      saveLimits();
     }
   }
 }
@@ -130,30 +162,46 @@ void calibrate() {
 void callback(char* topic, byte* payload, unsigned int length) {
   String msg;
   for (unsigned int i = 0; i < length; i++) msg += (char)payload[i];
+  msg+="\0";
+  Serial.print(topic);
+  Serial.print(" ");
+  Serial.println(msg);
   String setTopic = "home/blind/" + String(room) + "/set";
   String calibrateTopic = "home/blind/" + String(room) + "/calibrate";
   if (String(topic) == setTopic) {
-    if (msg == "open") moveTo(topPosition);
-    else if (msg == "close") moveTo(bottomPosition);
+    if (strstr(msg.c_str(),"open")!=NULL) {
+      moveTo(topPosition);
+      Serial.println("Opens blinds");
+    }  
+    else if (strstr(msg.c_str(),"close")!=NULL) {
+      moveTo(bottomPosition);
+      Serial.println("Closing blinds");
+    }  
     else {
       int percent = msg.toInt();
-      long range = topPosition - bottomPosition;
+      long range = topPosition-bottomPosition;
       if (range == 0) return;
       long target = bottomPosition + ((range * percent) / 100);
       moveTo(target);
     }
+    Serial.println("Bottom:"+String(bottomPosition)+" Top: "+String(topPosition)+" Current "+String(currentPosition));  
   }  
   if (String(topic) == calibrateTopic) {
     calibrate();
   }
+
   if (String(topic) == "home/blind/" + String(room) + "/save_bottom") {
     bottomPosition = currentPosition;
     saveLimits();
+    setTopic ="home/blind/" + String(room) + "/bottom_value";
+    client.publish(setTopic.c_str(), String(bottomPosition).c_str(), true);
     Serial.println("Bottom position saved.");
   }
   if (String(topic) == "home/blind/" + String(room) + "/save_top") {
     topPosition = currentPosition;
     saveLimits();
+    setTopic ="home/blind/" + String(room) + "/top_value";
+    client.publish(setTopic.c_str(), String(topPosition).c_str(), true);
     Serial.println("Top position saved.");
   }
   if (String(topic) == "home/blind/" + String(room) + "/set_position") {
@@ -172,8 +220,14 @@ void reconnect() {
       Serial.println(success ? "SUCCESS" : "FAILED");
       String setTopic = "home/blind/" + String(room) + "/set";
       String calibrateTopic = "home/blind/" + String(room) + "/calibrate";
+      String set_position_topic = "home/blind/" + String(room) + "/set_position";
+      String save_top_topic = "home/blind/" + String(room) + "/save_top";
+      String save_bottom_topic = "home/blind/" + String(room) + "/save_bottom";
       client.subscribe(setTopic.c_str());
       client.subscribe(calibrateTopic.c_str());
+      client.subscribe(set_position_topic.c_str());
+      client.subscribe(save_top_topic.c_str());
+      client.subscribe(save_bottom_topic.c_str());
       client.publish("home/blind/status", "online", true);
       publishDiscoveryConfig();
     } else {
@@ -182,16 +236,20 @@ void reconnect() {
   }
 }
 
+
 void saveLimits() {
   EEPROM.put(0, bottomPosition);
   EEPROM.put(sizeof(long), topPosition);
+  EEPROM.put(sizeof(long), currentPosition);
   EEPROM.commit();
 }
 
 void loadLimits() {
   EEPROM.get(0, bottomPosition);
   EEPROM.get(sizeof(long), topPosition);
+  EEPROM.get(sizeof(long), currentPosition);
   calibrated = true;
+  Serial.println("Bottom:"+String(bottomPosition)+" Top: "+String(topPosition)+" Current "+String(currentPosition));
 }
 
 void publishState() {
@@ -204,6 +262,8 @@ void publishState() {
   int percent = (currentPosition - bottomPosition) * 100 / range;
   percent = constrain(percent, 0, 100);
   client.publish(stateTopic.c_str(), String(percent).c_str(), true);
+  stateTopic = "home/blind/" + String(room) + "/CurrentPosition";
+  client.publish(stateTopic.c_str(), String(currentPosition).c_str(), true);
 }
 
 void setup() {
@@ -211,19 +271,17 @@ void setup() {
   Serial.println("-------------------------------------------------------------------");  
   pinMode(LIMIT_TOP_PIN, INPUT_PULLUP);
   pinMode(LIMIT_BOTTOM_PIN, INPUT_PULLUP);
-   pinMode(IN1_PIN, OUTPUT);
+  pinMode(IN1_PIN, OUTPUT);
   pinMode(IN2_PIN, OUTPUT);
   pinMode(IN3_PIN, OUTPUT);
   pinMode(IN4_PIN, OUTPUT);
 
   EEPROM.begin(EEPROM_SIZE);
   loadLimits();
-   bottomPosition=9765;
-  topPosition=0;
-  saveLimits(); 
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
+  publishState();
   Serial.println("Setup Completed");
   Serial.println("-------------------------------------------------------------------");
 }
