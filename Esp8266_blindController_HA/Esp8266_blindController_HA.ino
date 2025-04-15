@@ -20,7 +20,12 @@
 #define LIMIT_TOP_PIN D3
 #define LIMIT_BOTTOM_PIN D6
 #elif defined(ESP32)
-
+#define IN1_PIN 5
+#define IN2_PIN 0
+#define IN3_PIN 4
+#define IN4_PIN 2
+#define LIMIT_TOP_PIN 3
+#define LIMIT_BOTTOM_PIN 15
 #endif
 #define ReverseSetup true
 
@@ -31,7 +36,8 @@ const char* mqtt_user = MQTT_USER;
 const char* mqtt_pass = MQTT_PASS;
 
 //const char* room = "bed_room_rigth"; //Has to uniq
-const char* room = "bed_room_left";
+//const char* room = "bed_room_left";
+const char* room = "main_room_test";
 
 const uint8_t stepSequence[8][4] = {
   {1, 0, 0, 0},
@@ -50,6 +56,11 @@ const uint8_t fullStepSequence[4][4] = {
   {0, 0, 1, 1},  // Step 3
   {1, 0, 0, 1}   // Step 4
 };
+
+
+IPAddress local_IP(LOCAL_IP);
+IPAddress gateway(GATEWAY_IP);
+IPAddress subnet(SUBNET_MASK);
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -73,6 +84,7 @@ unsigned long stepInterval = 1200; // microseconds between steps
 
 void setup_wifi() {
   Serial.println("Connecting to: "+String(ssid)); 
+  WiFi.config(local_IP, gateway, subnet);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -295,7 +307,7 @@ void setup() {
 
   EEPROM.begin(EEPROM_SIZE);
   loadLimits();
-  if (false) {
+  if (topPosition<=0) {
     bottomPosition=0;
     topPosition=70000;
     currentPosition=0;
