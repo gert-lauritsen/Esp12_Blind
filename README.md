@@ -8,4 +8,4 @@ I den nye hardware har jeg lagt ind at man også kan bruge en almindelig stepper
 - [608ZZ kugleleje](https://arduinotech.dk/shop/kuglelejer/)
 - [28BYJ-48](https://arduinotech.dk/shop/step-gear-motor-28byj-48-5v-4-phase-5-wire-dc-5v/) stepper motor
 
-![Schematic](https://github.com/gert-lauritsen/Esp12_Blind/blob/master/Schematic.png)
+- [Schematic](https://github.com/gert-lauritsen/Esp12_Blind/blob/master/ESP12DualStepperPCB/RulleGardin.pdf)
