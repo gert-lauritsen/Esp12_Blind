@@ -22,8 +22,8 @@ const char* mqtt_server = MQTT_SERVER;
 const char* mqtt_user = MQTT_USER;
 const char* mqtt_pass = MQTT_PASS;
 
-//const char* room = "bed_room_rigth";
-const char* room = "bed_room_left";
+const char* room = "bed_room_rigth_lotte"; //Has to uniq
+//const char* room = "bed_room_left";
 
 const uint8_t stepSequence[8][4] = {
   {1, 0, 0, 0},
@@ -72,7 +72,7 @@ void setup_wifi() {
   }  
   Serial.println("");
     // Set hostname, e.g., "myesp"
-  if (!MDNS.begin(String(room)) {
+  if (!MDNS.begin(String(room))) {
     Serial.println("Error starting mDNS");
     return;
   }
@@ -219,7 +219,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 void reconnect() {
   while (!client.connected()) {
-    if (client.connect("ESP8266Blind", mqtt_user, mqtt_pass)) {
+    String ClientName = "Blind_" + String(room);
+    if (client.connect(ClientName.c_str(), mqtt_user, mqtt_pass)) {
       String setStatus = String("home/blind/") + room + "/status";
       bool success = client.publish(setStatus.c_str(), "online",true);
       Serial.print("Mqtt Online result: ");
@@ -274,6 +275,7 @@ void publishState() {
 
 void setup() {
   Serial.begin(115200);
+  Serial.println("");
   Serial.println("-------------------------------------------------------------------");  
   pinMode(LIMIT_TOP_PIN, INPUT_PULLUP);
   pinMode(LIMIT_BOTTOM_PIN, INPUT_PULLUP);
@@ -284,11 +286,20 @@ void setup() {
 
   EEPROM.begin(EEPROM_SIZE);
   loadLimits();
+  if (false) {
+    bottomPosition=0;
+    topPosition=70000;
+    currentPosition=0;
+    saveLimits();
+    Serial.println("Init value loaded");
+    Serial.println("Bottom:"+String(bottomPosition)+" Top: "+String(topPosition)+" Current "+String(currentPosition));
+  }
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
   publishState();
   Serial.println("Setup Completed");
+  Serial.println(WiFi.macAddress());
   Serial.println("-------------------------------------------------------------------");
 }
 
