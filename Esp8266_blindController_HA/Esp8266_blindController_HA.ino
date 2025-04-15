@@ -1,19 +1,27 @@
 // ESP8266 Blind Controller with ULN2003 and MQTT Auto-Discovery for Home Assistant (non-blocking)
+#ifdef ESP8266
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
+#elif defined(ESP32)
+#include <WiFi.h>
+#include <ESPmDNS.h>
+#endif
 #include <PubSubClient.h>
 #include <EEPROM.h>
 #include <ArduinoJson.h>
 #include "secrets.h"
 //#include <Stepper_28BYJ_48.h>
 
-
+#ifdef ESP8266
 #define IN1_PIN 5
 #define IN2_PIN 0
 #define IN3_PIN 4
 #define IN4_PIN 2
 #define LIMIT_TOP_PIN D3
 #define LIMIT_BOTTOM_PIN D6
+#elif defined(ESP32)
+
+#endif
 #define ReverseSetup true
 
 const char* ssid = WIFI_SSID;
@@ -22,8 +30,8 @@ const char* mqtt_server = MQTT_SERVER;
 const char* mqtt_user = MQTT_USER;
 const char* mqtt_pass = MQTT_PASS;
 
-const char* room = "bed_room_rigth_lotte"; //Has to uniq
-//const char* room = "bed_room_left";
+//const char* room = "bed_room_rigth"; //Has to uniq
+const char* room = "bed_room_left";
 
 const uint8_t stepSequence[8][4] = {
   {1, 0, 0, 0},
@@ -147,7 +155,7 @@ void updateMotor() {
 }
 
 void calibrate() {
-  while (digitalRead(LIMIT_BOTTOM_PIN) == HIGH) {
+ /* while (digitalRead(LIMIT_BOTTOM_PIN) == HIGH) {
     stepMotor(false);
     delay(5);
     currentPosition--;
@@ -162,7 +170,7 @@ void calibrate() {
   topPosition = currentPosition;
   saveLimits();
   calibrated = true;
-  publishState();
+  publishState();*/
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -247,16 +255,17 @@ void reconnect() {
 void saveLimits() {
   EEPROM.put(0, bottomPosition);
   EEPROM.put(sizeof(long), topPosition);
-  EEPROM.put(sizeof(long), currentPosition);
+  EEPROM.put(sizeof(long)*2, currentPosition);
   EEPROM.commit();
+  Serial.println("Save Bottom:"+String(bottomPosition)+" Top: "+String(topPosition)+" Current "+String(currentPosition));
 }
 
 void loadLimits() {
   EEPROM.get(0, bottomPosition);
   EEPROM.get(sizeof(long), topPosition);
-  EEPROM.get(sizeof(long), currentPosition);
+  EEPROM.get(sizeof(long)*2, currentPosition);
   calibrated = true;
-  Serial.println("Bottom:"+String(bottomPosition)+" Top: "+String(topPosition)+" Current "+String(currentPosition));
+  Serial.println("Load Bottom:"+String(bottomPosition)+" Top: "+String(topPosition)+" Current "+String(currentPosition));
 }
 
 void publishState() {
