@@ -28,6 +28,7 @@
 #define LIMIT_BOTTOM_PIN 15
 #endif
 #define ReverseSetup true
+#define UpdateStatusTimeout 10000
 
 const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASS;
@@ -35,9 +36,9 @@ const char* mqtt_server = MQTT_SERVER;
 const char* mqtt_user = MQTT_USER;
 const char* mqtt_pass = MQTT_PASS;
 
-//const char* room = "bed_room_rigth"; //Has to uniq
+const char* room = "bed_room_rigth"; //Has to uniq
 //const char* room = "bed_room_left";
-const char* room = "main_room_test";
+//const char* room = "main_room_test";
 
 const uint8_t stepSequence[8][4] = {
   {1, 0, 0, 0},
@@ -69,6 +70,7 @@ long topPosition = 0;
 long bottomPosition = 0;
 long currentPosition = 0;
 long targetPosition = 0;
+long lastupdatestatus = 0; 
 
 bool calibrated = false;
 bool moving = false;
@@ -152,18 +154,30 @@ void moveTo(long target) {
   }  
 }
 
+void stop() {
+ moving=false;
+ digitalWrite(IN1_PIN,0);
+ digitalWrite(IN2_PIN,0);
+ digitalWrite(IN3_PIN,0);
+ digitalWrite(IN4_PIN,0);
+}
+
 void updateMotor() {
   if (!moving) return;
-  if (micros() - lastStepTime >= stepInterval) {
+  if ((micros() - lastStepTime) >= stepInterval) {
     lastStepTime = micros();
     stepMotor(direction);
     currentPosition += direction ? 1 : -1;
     if (currentPosition == targetPosition) {
-      moving = false;
+      stop();
       publishState();
       saveLimits();
     }
   }
+  if ((millis() - lastupdatestatus) >= UpdateStatusTimeout) {
+    lastupdatestatus=micros();
+    publishState();
+  }    
 }
 
 void calibrate() {
@@ -195,13 +209,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
   String setTopic = "home/blind/" + String(room) + "/set";
   String calibrateTopic = "home/blind/" + String(room) + "/calibrate";
   if (String(topic) == setTopic) {
-    if (strstr(msg.c_str(),"open")!=NULL) {
+    if (strstr(msg.c_str(),"OPEN")!=NULL) {
       moveTo(topPosition);
       Serial.println("Opens blinds");
     }  
-    else if (strstr(msg.c_str(),"close")!=NULL) {
+    else if (strstr(msg.c_str(),"CLOSE")!=NULL) {
       moveTo(bottomPosition);
       Serial.println("Closing blinds");
+    }  
+    else if (strstr(msg.c_str(),"STOP")!=NULL) {
+      stop();
     }  
     else {
       int percent = msg.toInt();
