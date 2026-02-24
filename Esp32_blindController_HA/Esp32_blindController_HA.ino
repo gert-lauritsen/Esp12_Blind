@@ -21,16 +21,18 @@
 #define LIMIT_BOTTOM_PIN D6
 #elif defined(ESP32)
 #define IN1_PIN 5
-#define IN2_PIN 0
-#define IN3_PIN 4
+#define IN2_PIN 19 //Step
+#define IN3_PIN 18 //Dir
 #define IN4_PIN 2
 #define LIMIT_TOP_PIN 3
 #define LIMIT_BOTTOM_PIN 15
+#define DRV8825_EN 21
 #endif
 #define ReverseSetup true
 #define UpdateStatusTimeout 10000
-#define ULN2003
-//#define DRV8825
+//#define ULN2003
+//#define StaticIP
+#define DRV8825
 
 const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASS;
@@ -38,19 +40,9 @@ const char* mqtt_server = MQTT_SERVER;
 const char* mqtt_user = MQTT_USER;
 const char* mqtt_pass = MQTT_PASS;
 
-const char* room = "bed_room_rigth"; //Has to uniq
-
-// Build a stable device identifier for Home Assistant "device" grouping (ESP8266-only)
-String haDeviceId() {
-  uint32_t chip = ESP.getChipId();
-  char buf[32];
-  // include room to avoid collisions if you ever clone flash to another unit without changing room
-  snprintf(buf, sizeof(buf), "esp8266_blind_%06X_%s", chip, room);
-  return String(buf);
-}
-
+//const char* room = "bed_room_rigth"; //Has to uniq
 //const char* room = "bed_room_left";
-//const char* room = "main_room_test";
+const char* room = "main_room_test";
 
 const uint8_t stepSequence[8][4] = {
   {1, 0, 0, 0},
@@ -99,7 +91,9 @@ unsigned long stepInterval = 1200; // microseconds between steps
 
 void setup_wifi() {
   Serial.println("Connecting to: "+String(ssid)); 
-  WiFi.config(local_IP, gateway, subnet);
+  #ifdef StaticIP
+    WiFi.config(local_IP, gateway, subnet);
+  #endif
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
@@ -114,57 +108,20 @@ void setup_wifi() {
 }
 
 void publishDiscoveryConfig() {
-  // Home Assistant MQTT Discovery for a Cover entity (blind)
-  // Discovery topic format: homeassistant/<component>/<unique_id>/config
-  String uniqueId = "esp8266_blind_" + String(room);
-  String topic = "homeassistant/cover/" + uniqueId + "/config";
-
-  String base = "home/blind/" + String(room);
-  // Use a dedicated availability topic. If you previously published to
-  // "home/blind/<room>/availability" (common pattern) and an old retained
-  // "offline" is still there, Home Assistant will keep the entity unavailable
-  // until it receives "online" on the *same* topic.
-  //
-  // So we standardize on "/availability" here.
-  String statusTopic = base + "/availability";
-
-  StaticJsonDocument<768> doc;
-
-  // Friendly name
-  String displayName = String(room);
-  displayName.replace("_", " ");
+  String topic = "homeassistant/cover/" + String(room) + "_blind/config";
+  StaticJsonDocument<512> doc;
+  String displayName = String(room); displayName.replace("_", " ");
   doc["name"] = displayName + " Blind";
-
-  // Topics
-  doc["command_topic"]       = base + "/set";           // OPEN/CLOSE/STOP (and also used by your code)
-  doc["position_topic"]      = base + "/state";         // 0-100 position reports
-  doc["set_position_topic"]  = base + "/set_position";  // numeric 0-100 set
-
-  // Availability (shows device online/offline)
-  doc["availability_topic"]   = statusTopic;
-  doc["payload_available"]    = "online";
-  doc["payload_not_available"]= "offline";
-
-  // Entity identity
-  doc["unique_id"] = uniqueId;
+  doc["command_topic"] = "home/blind/" + String(room) + "/set";
+  doc["position_topic"] = "home/blind/" + String(room) + "/state";
+  doc["set_position_topic"] = "home/blind/" + String(room) + "/set";
+  doc["unique_id"] = "esp8266_blind_" + String(room);
   doc["device_class"] = "blind";
-
-  // ---- Device info (this is what makes it show up as a Device in HA) ----
-  JsonObject dev = doc.createNestedObject("device");
-  JsonArray ids = dev.createNestedArray("identifiers");
-  ids.add(haDeviceId());                 // stable ID per unit
-  dev["name"] = displayName + " Blind Controller";
-  dev["manufacturer"] = "DIY";
-  dev["model"] = "ESP8266 Blind Controller (ULN2003/DRV8825)";
-  dev["sw_version"] = "1.0";
-  dev["suggested_area"] = displayName;
-
-  char buffer[768];
-  size_t n = serializeJson(doc, buffer, sizeof(buffer));
-  bool success = client.publish(topic.c_str(), (const uint8_t*)buffer, n, true);
-
+  char buffer[512];
+  serializeJson(doc, buffer);
+  bool success = client.publish(topic.c_str(), buffer, true);
   Serial.print("Discovery publish result: ");
-  Serial.println(success ? "SUCCESS" : "FAILED");
+  Serial.println(success ? "SUCCESS" : "FAILED");  
 }
 /*
 void stepMotor(bool dir) {
@@ -188,6 +145,7 @@ void stepMotor(bool dir) {
 void stepMotor(bool dir) {
   if (ReverseSetup) dir=!dir;
   StepValue=!StepValue;
+  digitalWrite(DRV8825_EN,0);
   digitalWrite(IN4_PIN, 0); //Set reset low
   digitalWrite(IN2_PIN, StepValue);
   digitalWrite(IN3_PIN, dir);
@@ -215,6 +173,7 @@ void moveTo(long target) {
   }  
 }
 
+#ifdef ULN2003
 void stop() {
  moving=false;
  digitalWrite(IN1_PIN,0);
@@ -222,6 +181,14 @@ void stop() {
  digitalWrite(IN3_PIN,0);
  digitalWrite(IN4_PIN,0);
 }
+#endif
+
+#ifdef DRV8825
+void stop() {
+ moving=false;
+ digitalWrite(DRV8825_EN,1);
+}
+#endif
 
 void updateMotor() {
   if (!moving) return;
@@ -237,7 +204,7 @@ void updateMotor() {
   }
   if ((millis() - lastupdatestatus) >= UpdateStatusTimeout) {
     lastupdatestatus=micros();
-    // publishState();
+    publishState();
   }    
 }
 
@@ -317,65 +284,30 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 void reconnect() {
   while (!client.connected()) {
-    String clientName = "Blind_" + String(room);
-
-    // Must match discovery availability_topic
-    String willTopic = String("home/blind/") + room + "/availability";
-
-    bool ok = false;
-
-    // If no MQTT username is configured, use the connect() overload without auth
-    if (mqtt_user == nullptr || mqtt_user[0] == '\0') {
-      ok = client.connect(
-        clientName.c_str(),
-        willTopic.c_str(),   // will topic
-        0,                   // will QoS
-        true,                // will retained
-        "offline"            // will message
-      );
-    } else {
-      ok = client.connect(
-        clientName.c_str(),
-        mqtt_user,
-        mqtt_pass,
-        willTopic.c_str(),   // will topic
-        0,                   // will QoS
-        true,                // will retained
-        "offline"            // will message
-      );
-    }
-
-    if (ok) {
-      // Publish online retained so HA immediately marks entity available
-      bool success = client.publish(willTopic.c_str(), "online", true);
+    String ClientName = "Blind_" + String(room);
+    if (client.connect(ClientName.c_str(), mqtt_user, mqtt_pass)) {
+      String setStatus = String("home/blind/") + room + "/status";
+      bool success = client.publish(setStatus.c_str(), "online",true);
       Serial.print("Mqtt Online result: ");
       Serial.println(success ? "SUCCESS" : "FAILED");
-
-      // Subscribe to your control topics (unchanged)
-      String setTopic            = String("home/blind/") + room + "/set";
-      String calibrateTopic      = String("home/blind/") + room + "/calibrate";
-      String setPositionTopic    = String("home/blind/") + room + "/set_position";
-      String saveTopTopic        = String("home/blind/") + room + "/save_top";
-      String saveBottomTopic     = String("home/blind/") + room + "/save_bottom";
-
+      String setTopic = "home/blind/" + String(room) + "/set";
+      String calibrateTopic = "home/blind/" + String(room) + "/calibrate";
+      String set_position_topic = "home/blind/" + String(room) + "/set_position";
+      String save_top_topic = "home/blind/" + String(room) + "/save_top";
+      String save_bottom_topic = "home/blind/" + String(room) + "/save_bottom";
       client.subscribe(setTopic.c_str());
       client.subscribe(calibrateTopic.c_str());
-      client.subscribe(setPositionTopic.c_str());
-      client.subscribe(saveTopTopic.c_str());
-      client.subscribe(saveBottomTopic.c_str());
-
+      client.subscribe(set_position_topic.c_str());
+      client.subscribe(save_top_topic.c_str());
+      client.subscribe(save_bottom_topic.c_str());
       client.publish("home/blind/status", "online", true);
-
       publishDiscoveryConfig();
     } else {
-      // Optional: print state to diagnose auth/timeout issues
-      Serial.print("MQTT connect failed, state=");
-      Serial.println(client.state());
-
       delay(5000);
     }
   }
 }
+
 
 void saveLimits() {
   EEPROM.put(0, bottomPosition);
@@ -417,8 +349,10 @@ void setup() {
   pinMode(IN2_PIN, OUTPUT);
   pinMode(IN3_PIN, OUTPUT);
   pinMode(IN4_PIN, OUTPUT);
+  pinMode(DRV8825_EN, OUTPUT);
 
   EEPROM.begin(EEPROM_SIZE);
+  stop();
   loadLimits();
   if (topPosition<=0) {
     bottomPosition=0;
@@ -429,15 +363,14 @@ void setup() {
     Serial.println("Bottom:"+String(bottomPosition)+" Top: "+String(topPosition)+" Current "+String(currentPosition));
   }
   setup_wifi();
-  Serial.print("MQTT host: "); Serial.println(mqtt_server);
-
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
-  client.setBufferSize(1024);
-
   publishState();
   Serial.println("Setup Completed");
   Serial.println(WiFi.macAddress());
+  #ifdef DRV8825
+    Serial.println("Driver selected: DRV8825 ");
+  #endif
   Serial.println("-------------------------------------------------------------------");
 }
 

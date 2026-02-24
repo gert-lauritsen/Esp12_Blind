@@ -2575,6 +2575,17 @@
 		)
 		(uuid "a7ab6ecb-f9e2-4971-b567-5409ae5301ec")
 	)
+	(text "Stepper Nema23"
+		(exclude_from_sim no)
+		(at 220.472 133.35 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(href "https://www.omc-stepperonline.com/download/23HS30-2804S.pdf?srsltid=AfmBOoofIwib1wgYiFYHcjm5GWBSbCCiXzbK5KRu2vmqnPUWyFy4xIbc")
+		)
+		(uuid "a82eddbd-72e1-4a35-bd09-11750e5337dd")
+	)
 	(text "Common"
 		(exclude_from_sim no)
 		(at 200.66 99.06 0)
@@ -3854,7 +3865,43 @@
 			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-			"AAAAAAAAAAAAAAAAAA=="
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+			"AAAAAAAAAAAAAAAAAABpAGIAbABlACAAIAAgACAAIAAgACAAIAAgACAAPQAgACIAdAByAHUAZQAi"
+			"AA0ADQAKAGEAYwBjAHIAbwBsAGUAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIAA9ACAAIgBzAHQA"
+			"YQB0AGkAYwB0AGUAeAB0ACIADQANAAoALwA+AA0ADQAKADwALwBpAGYAPgANAA0ACgA8AGkAZgAg"
+			"AGkAZAA9ACIAYQB0AG8AbQAoAEUAeABwAGEAbgBkAGUAZABGAG8AbwB0AGUAcgBUAGUAeAB0AEwA"
+			"aQBuAGsAKQAiAD4ADQANAAoAPABjAGMAcwB5AHMAbABpAG4AawANAA0ACgBmAG8AbgB0ACAAIAAg"
+			"ACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAPQAgACIAZwB0AGYAKABUAGEAcwBrAEQAaQBhAGwA"
+			"bwBnAFMAdAB5AGwAZQAsACAAMQA4ACwAIAAwACkAIgANAA0ACgBmAG8AcgBlAGcAcgBvAHUAbgBk"
+			"ACAAIAAgACAAIAAgACAAIAAgACAAPQAgACIAZwB0AGMAKABUAGEAcwBrAEQAaQBhAGwAbwBnAFMA"
+			"dAB5AGwAZQAsACAAMQA4ACwAIAAwACwAIAAzADgAMAAzACkAIgANAA0ACgAvAD4ADQANAAoAPAAv"
+			"AGkAZgA+AA0ADQAKADwALwBzAHQAeQBsAGUAPgANAA0ACgA8AC8AcwB0AHkAbABlAHMAaABlAGUA"
+			"dABzAD4ADQANAAoAPAAvAGQAdQBpAHgAbQBsAD4ADQANAAoARTsKU0VRLkYgUgAAAAAAAAAAmAB+"
+			"3/8BAAAwLCAwfTsKVEcAAEeIVCsAsL5z5P8BAADgUljg/wEAAEUueDsKRERYLkYzMiBSMC54eSwg"
+			"ZnJhZ21lbnQuYXR0cmliWzBdLnl6enc7CkRQMi5GMzIgUjAudywgUjAsIFIwOwpSU1EuRjMyIFIx"
+			"LngsIFIwLnc7CkkyRi5TIFIwLncsIGNbMV0ueDsKRElWLkYzMiBSMS55LCBSMC53LCBSMS54OwpQ"
+			"SzY0LlUgRDAueCwgY1swXTsKVEVYLkYgUjAueHl6LCBmcmFnbWVudC5hdHRyaWJbMF0ueXp6dywg"
+			"aGFuZGxlKEQwLngpLCAyRDsKTUFYLkYgUjEueCwgUjAsIFIwLnk7Ck1JTi5GIFIwLngsIFIwLCBS"
+			"MC55OwpNSU4uRiBSMC56LCBSMCwgUjEueDsKTUFELkYzMiBSMC53LCAtUjEueSwgezAuMjUsIDAu"
+			"NSwgMCwgMH0ueCwgezAuMjUsIDAuNSwgMCwgMH0ueTsKTUFELkYzMiBSMS54LCBSMS55LCB7MC4y"
+			"NSwgMCwgMCwgMH0sIA=="
 		)
 	)
 	(label "Coil2"
@@ -6421,23 +6468,13 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "StdEsp32.kicad_sch"
+		(property "Sheetfile" "StdEsp32_worm32.kicad_sch"
 			(at 109.22 102.1846 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left top)
-			)
-		)
-		(pin "EN" input
-			(at 109.22 49.53 180)
-			(uuid "4d2f3897-dfe8-4291-846b-11cda8e562fa")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
 			)
 		)
 		(pin "GPIO0" input
@@ -6480,59 +6517,9 @@
 				(justify right)
 			)
 		)
-		(pin "GPIO6" input
-			(at 109.22 78.74 180)
-			(uuid "41bcede1-9a94-4164-aa63-f43f8de5670c")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "GPIO7" input
-			(at 109.22 81.28 180)
-			(uuid "88a11904-a32e-4470-b7b5-5b29600df681")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "GPIO8" input
-			(at 109.22 83.82 180)
-			(uuid "f996032a-7593-4614-bb3c-e8029cdf25ef")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "GPIO9" input
-			(at 109.22 86.36 180)
-			(uuid "848c0537-7f47-4102-9ac7-9d912b0cdfd6")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "GPIO10" input
-			(at 109.22 88.9 180)
-			(uuid "ec4fb6af-e3c3-4bfc-a5c9-b1ecc0dcc563")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "GPIO11" input
-			(at 109.22 91.44 180)
-			(uuid "1cae7c4c-a76f-4f52-aaf9-3a722e3b0c42")
+		(pin "EN" input
+			(at 109.22 48.26 180)
+			(uuid "a9b4fc96-be09-4314-8a2a-cdd6dffac872")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6541,8 +6528,8 @@
 			)
 		)
 		(pin "GPIO12" input
-			(at 109.22 93.98 180)
-			(uuid "cb997fe9-f543-462c-9300-e39438ab6cf0")
+			(at 109.22 52.07 180)
+			(uuid "bdef7067-e576-462d-b248-a11fcafea5c8")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6551,8 +6538,8 @@
 			)
 		)
 		(pin "GPIO13" input
-			(at 109.22 53.34 180)
-			(uuid "e602be8c-83d0-46fb-a748-85831799b9ca")
+			(at 109.22 54.61 180)
+			(uuid "89040021-347d-4054-b5c1-b215d95d44cd")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6561,8 +6548,8 @@
 			)
 		)
 		(pin "GPIO14" input
-			(at 109.22 55.88 180)
-			(uuid "abf88425-33a2-46ac-bd26-cd1cbe58b5a2")
+			(at 109.22 57.15 180)
+			(uuid "70a9131e-c272-4c76-b648-ce7c6ad1dd83")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6571,8 +6558,8 @@
 			)
 		)
 		(pin "GPIO15" input
-			(at 109.22 58.42 180)
-			(uuid "1387ce9a-39ab-4dbb-a782-29e5182225eb")
+			(at 109.22 59.69 180)
+			(uuid "ffd2a01f-2636-4786-984f-869d531f0fcd")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6581,8 +6568,8 @@
 			)
 		)
 		(pin "GPIO16" input
-			(at 109.22 60.96 180)
-			(uuid "0eb5306d-57b3-4633-9193-4cc98f1ad2ab")
+			(at 109.22 62.23 180)
+			(uuid "1cd134bd-3a06-4cb2-89e6-7c4c7a3141fa")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6591,8 +6578,8 @@
 			)
 		)
 		(pin "GPIO17" input
-			(at 109.22 63.5 180)
-			(uuid "e7739fad-9f1f-4b1a-a550-91888dbf8526")
+			(at 109.22 64.77 180)
+			(uuid "211d037a-684f-4811-b398-b6810de52eb6")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6601,8 +6588,88 @@
 			)
 		)
 		(pin "GPIO18" input
-			(at 109.22 66.04 180)
-			(uuid "7c115e5e-7219-46e3-92a6-b7f7cbf5885b")
+			(at 109.22 67.31 180)
+			(uuid "3984d2d1-5d32-4af4-8ed1-1939aa11467d")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "GPIO19" input
+			(at 109.22 69.85 180)
+			(uuid "62e106a9-8a92-4115-b348-f5717bcbddae")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "GPIO21" input
+			(at 109.22 72.39 180)
+			(uuid "ce6c0809-d4f9-4aa4-ac6b-4dd03d111a42")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "GPIO25" input
+			(at 109.22 74.93 180)
+			(uuid "dfa33328-476c-415d-8ed0-2c3953884137")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "GPIO26" input
+			(at 109.22 77.47 180)
+			(uuid "150826c9-130b-40f0-8ca3-690e8740e1cc")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "GPIO27" input
+			(at 109.22 80.01 180)
+			(uuid "9b3d8f1a-1fbe-453d-b328-e0c044053524")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "GPIO32" input
+			(at 109.22 82.55 180)
+			(uuid "85895484-6ad5-4961-99b2-a41713811dd0")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "GPIO33" input
+			(at 109.22 85.09 180)
+			(uuid "04b53f6b-6bd4-4988-b7d9-20a1fa920411")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "GPIO34" input
+			(at 109.22 87.63 180)
+			(uuid "7f4f4196-1b59-4f43-8677-25ab60d1a994")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6611,38 +6678,8 @@
 			)
 		)
 		(pin "GPIO35" input
-			(at 109.22 68.58 180)
-			(uuid "afca5b60-a0ad-4109-8b96-3e9349ab3ea3")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "GPIO37" input
-			(at 109.22 71.12 180)
-			(uuid "c0043008-5180-49f5-9f1e-549d7f3a714a")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "GPIO38" input
-			(at 109.22 73.66 180)
-			(uuid "4dacbf45-bb4d-48ed-8932-621eb703d16a")
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(pin "GPIO40" input
-			(at 109.22 76.2 180)
-			(uuid "4c8f3821-70a8-4d5d-b093-1b9efdfc82fc")
+			(at 109.22 90.17 180)
+			(uuid "6fe0b7db-3481-4517-98a8-b7ebd911d385")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6651,8 +6688,28 @@
 			)
 		)
 		(pin "RX" input
-			(at 109.22 96.52 180)
-			(uuid "5018a5f9-b1ce-4fd1-a630-a06a574c4bad")
+			(at 109.22 92.71 180)
+			(uuid "dabddc37-a403-4857-ba6d-71c038cd2183")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SCL" input
+			(at 109.22 95.25 180)
+			(uuid "08c2cb85-6ac8-4d10-94c4-24015a85bb40")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SDA" input
+			(at 109.22 97.79 180)
+			(uuid "4e9f1a6a-36bd-42b0-9b23-f15e8c2af10c")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6662,12 +6719,32 @@
 		)
 		(pin "TX" input
 			(at 109.22 99.06 180)
-			(uuid "7c13a85c-d931-46e4-8af7-ec3b674f648d")
+			(uuid "eea6d740-ddc2-4216-b30a-6eded04c0c18")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+			)
+		)
+		(pin "Uart2_RX" input
+			(at 135.89 52.07 0)
+			(uuid "316a0ac3-fd4a-4a26-8dea-f531faac55b9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "Uart2_TX" input
+			(at 135.89 54.61 0)
+			(uuid "5dd1e6b1-17c3-4158-ad57-de658e877626")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
 			)
 		)
 		(instances
