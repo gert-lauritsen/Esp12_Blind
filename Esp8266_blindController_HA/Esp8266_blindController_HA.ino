@@ -39,6 +39,7 @@ const char* mqtt_user = MQTT_USER;
 const char* mqtt_pass = MQTT_PASS;
 
 const char* room = "bed_room_rigth"; //Has to uniq
+//const char* room = "bed_room_left"; //Has to uniq
 
 // Build a stable device identifier for Home Assistant "device" grouping (ESP8266-only)
 String haDeviceId() {
@@ -236,8 +237,8 @@ void updateMotor() {
     }
   }
   if ((millis() - lastupdatestatus) >= UpdateStatusTimeout) {
-    lastupdatestatus=micros();
-    // publishState();
+    lastupdatestatus=millis();
+    publishState();
   }    
 }
 
